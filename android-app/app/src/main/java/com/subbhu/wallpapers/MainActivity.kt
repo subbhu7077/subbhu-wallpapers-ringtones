@@ -96,7 +96,7 @@ class MainActivity : Activity() {
     private fun home() {
         content.addView(label("SUBBHU ✦", 16f, cyan, true))
         content.addView(gap(8))
-        content.addView(label("WALLPAPERS\\n& RINGTONES", 30f, Color.WHITE, true))
+        content.addView(label("WALLPAPERS\n& RINGTONES", 30f, Color.WHITE, true))
         content.addView(gap(6))
         content.addView(label("Your phone. Your vibe.", 15f, Color.LTGRAY))
         content.addView(gap(20))
@@ -107,7 +107,7 @@ class MainActivity : Activity() {
         }
         hero.addView(label("YOUR SCREEN, REIMAGINED", 12f, Color.WHITE, true))
         hero.addView(gap(10))
-        hero.addView(label("Fresh looks,\\none tap away.", 27f, Color.WHITE, true))
+        hero.addView(label("Fresh looks,\none tap away.", 27f, Color.WHITE, true))
         hero.addView(gap(14))
         hero.addView(button("Explore wallpapers  →") { showPage("Wallpapers") })
         content.addView(hero, fullWidth())
@@ -230,6 +230,11 @@ class MainActivity : Activity() {
         box.addView(gap(10))
         box.addView(label(wall.title, 20f, Color.WHITE, true))
         box.addView(gap(10))
+        box.addView(button("Set as wallpaper") {
+            setStaticWallpaper(wall.url)
+            dialog.dismiss()
+        })
+        box.addView(gap(8))
         box.addView(button("Download wallpaper") {
             download(wall.url, wall.title.replace(" ", "_") + ".jpg")
             dialog.dismiss()
@@ -362,6 +367,25 @@ class MainActivity : Activity() {
             }
         } catch (_: Exception) {
             Toast.makeText(this, "Could not play audio. Check internet.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setStaticWallpaper(url: String) {
+        Toast.makeText(this, "Preparing wallpaper…", Toast.LENGTH_SHORT).show()
+        thread {
+            try {
+                URL(url).openStream().use { stream ->
+                    WallpaperManager.getInstance(applicationContext)
+                        .setStream(stream, null, true, WallpaperManager.FLAG_SYSTEM)
+                }
+                runOnUiThread {
+                    Toast.makeText(this, "Wallpaper applied to Home screen!", Toast.LENGTH_LONG).show()
+                }
+            } catch (_: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Could not set wallpaper. Check internet and try again.", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
