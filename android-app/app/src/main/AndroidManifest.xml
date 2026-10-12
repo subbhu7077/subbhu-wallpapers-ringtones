@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="false"
-        android:label="SUBBHU Wallpapers"
+        android:label="SUBBHU Wallpapers & Ringtones"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.NoActionBar">
-
         <activity
             android:name="com.subbhu.wallpapers.MainActivity"
             android:exported="true">
@@ -13,5 +14,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name="com.subbhu.wallpapers.SubbhuLiveWallpaperService"
+            android:label="SUBBHU Animated Gradient"
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/subbhu_wallpaper" />
+        </service>
     </application>
 </manifest>
