@@ -1,18 +1,17 @@
-name: Android CI
+name: Build Android APK
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build Android APK
+    name: Build and Upload APK
     runs-on: ubuntu-latest
 
     steps:
@@ -36,14 +35,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Check Java and Gradle
-        run: |
-          java -version
-          gradle --version
-          sdkmanager --list_installed
-
       - name: Build debug APK
-        run: gradle :android-app:app:assembleDebug
+        run: gradle --no-daemon :android-app:app:assembleDebug
+
+      - name: Verify APK
+        run: |
+          find android-app -type f -name '*.apk' -print
+          test -n "$(find android-app -type f -name '*.apk' -print -quit)"
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
